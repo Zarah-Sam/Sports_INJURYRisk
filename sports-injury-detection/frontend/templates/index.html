@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Injury Risk Detection Intelligence Platform</title>
+  <meta name="description" content="AI-Powered Athlete Biomechanics and Injury Risk Prediction Platform">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">
+        <h1>AI SPORTS INJURY INTELLIGENCE <span class="badge-pill">v2.0 PRO</span></h1>
+        <p>Biomechanical Pose Estimation & Predictive Movement Analytics</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- Role Switcher -->
+      <div class="role-switcher-box">
+        <label for="role-select">View As:</label>
+        <select id="role-select" class="role-select" onchange="window.switchRole(this.value)">
+          <option value="sports_scientist" selected>🔬 Sports Scientist</option>
+          <option value="athlete">👤 Athlete (Marcus Vance)</option>
+          <option value="coach">📋 Head Coach</option>
+          <option value="physiotherapist">🩺 Physiotherapist (DPT)</option>
+          <option value="administrator">⚙️ Administrator</option>
+        </select>
+      </div>
+
+      <!-- Notifications Bell -->
+      <button class="notif-btn" id="notif-bell" onclick="window.toggleNotifModal()" title="System Alerts">
+        🔔
+        <span class="notif-badge" id="notif-count">2</span>
+      </button>
+
+      <!-- Active User Profile Chip -->
+      <div class="user-profile-chip">
+        <img id="user-avatar" class="user-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" alt="Avatar">
+        <span id="user-display-name" class="user-name">Dr. Aris Thorne</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <button class="tab-btn active" onclick="window.switchTab('dashboard')">
+      <span>📊</span> <span id="dashboard-tab-title">Executive Dashboard</span>
+    </button>
+    <button class="tab-btn" onclick="window.switchTab('analyzer')">
+      <span>🎥</span> Video Biomechanics Analyzer
+    </button>
+    <button class="tab-btn" onclick="window.switchTab('athletes')">
+      <span>🏃</span> Athletes & Squad Roster
+    </button>
+    <button class="tab-btn" onclick="window.switchTab('analytics')">
+      <span>📈</span> Kinematic & Injury Analytics
+    </button>
+    <button class="tab-btn" onclick="window.switchTab('exercises')">
+      <span>📋</span> Corrective Regimens
+    </button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="main-content">
+
+    <!-- ==========================================
+         TAB 1: DYNAMIC ROLE DASHBOARD
+         ========================================== -->
+    <section id="tab-dashboard" class="tab-pane active">
+      
+      <!-- Top KPI Stats Row -->
+      <div class="grid-cols-4" id="kpi-row">
+        <!-- Dynamically rendered by JS based on active role -->
+      </div>
+
+      <!-- Role Specific Content Area -->
+      <div id="role-specific-view">
+        <!-- Rendered by JS -->
+      </div>
+
+    </section>
+
+    <!-- ==========================================
+         TAB 2: VIDEO BIOMECHANICS ANALYZER
+         ========================================== -->
+    <section id="tab-analyzer" class="tab-pane">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🎥</span> End-to-End Biomechanical Pose & Injury Risk Analyzer
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary" onclick="window.exportCurrentReport()" id="btn-export-pdf">
+              📄 Export Clinical Report (PDF)
+            </button>
+          </div>
+        </div>
+
+        <div class="analyzer-container">
+          <!-- Left: Video & Canvas Stream Display -->
+          <div class="video-section">
+            <div class="video-player-wrap" id="video-wrapper">
+              <video id="main-video-player" controls autoplay loop playsinline>
+                <source id="video-source" src="" type="video/mp4">
+                Your browser does not support video playback.
+              </video>
+              <canvas id="webcam-canvas" style="display: none;"></canvas>
+
+              <div class="analysis-overlay-hud">
+                <div class="hud-pill">
+                  <span style="color: #10b981;">●</span> AI TRACKING ACTIVE: <span id="hud-model-tag">YOLOv8-POSE</span>
+                </div>
+                <div class="hud-pill" id="hud-risk-pill" style="color: #ef4444;">
+                  HIGH RISK DETECTED
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload & Motion Presets Control Bar -->
+            <div class="control-bar">
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <input type="file" id="video-file-input" class="upload-input-hidden" accept="video/mp4,video/quicktime,video/webm" onchange="window.handleVideoUpload(event)">
+                <button class="btn btn-primary" onclick="document.getElementById('video-file-input').click()">
+                  📤 Upload Video File
+                </button>
+                <button class="btn btn-secondary" id="btn-webcam-toggle" onclick="window.toggleWebcam()">
+                  📷 Live Webcam Mode
+                </button>
+              </div>
+
+              <!-- Presets -->
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <span style="font-size: 11.5px; color: var(--text-muted); font-weight: 700;">PRESETS:</span>
+                <button class="btn btn-secondary" onclick="window.loadDemo('valgus_squat', 'ATH-001', 'Squat Deceleration Valgus')">
+                  💥 Squat Knee Valgus
+                </button>
+                <button class="btn btn-secondary" onclick="window.loadDemo('jump_landing', 'ATH-001', 'High Jump Stiff Landing')">
+                  🦿 Jump Stiff Impact
+                </button>
+                <button class="btn btn-secondary" onclick="window.loadDemo('sprint_cut', 'ATH-002', 'Sprint Cutting Drill')">
+                  ⚡ Sprint Cutting
+                </button>
+              </div>
+            </div>
+
+            <!-- Real-Time Biomechanical Telemetry Cards -->
+            <div style="margin-top: 18px;">
+              <h3 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.5px;">
+                Detected Biomechanical Telemetry
+              </h3>
+              <div class="metric-grid-compact">
+                <div class="compact-card">
+                  <div class="label">Left Knee Valgus (Frontal)</div>
+                  <div class="val val-crit" id="m-valgus-l">16.8°</div>
+                  <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">Threshold: &lt;8.0°</div>
+                </div>
+                <div class="compact-card">
+                  <div class="label">Right Knee Valgus</div>
+                  <div class="val val-low" id="m-valgus-r">7.2°</div>
+                  <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">Normal alignment</div>
+                </div>
+                <div class="compact-card">
+                  <div class="label">Knee Flexion (Landing Angle)</div>
+                  <div class="val val-mod" id="m-knee-flex">31.4°</div>
+                  <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">Stiff impact &lt;35.0°</div>
+                </div>
+                <div class="compact-card">
+                  <div class="label">Trunk Lateral Sway</div>
+                  <div class="val val-mod" id="m-trunk-lean">12.1°</div>
+                  <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">Core stabilization</div>
+                </div>
+                <div class="compact-card">
+                  <div class="label">Pelvic Drop / Unleveling</div>
+                  <div class="val val-mod" id="m-pelvic-drop">8.4°</div>
+                  <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">Trendelenburg sign</div>
+                </div>
+                <div class="compact-card">
+                  <div class="label">Bilateral Asymmetry Index</div>
+                  <div class="val val-crit" id="m-asym-pct">21.5%</div>
+                  <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">Elevated re-injury hazard</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Weighted Scoring & Injury Predictions -->
+          <div class="analytics-section">
+            
+            <!-- Overall Risk Gauge -->
+            <div class="risk-gauge-container">
+              <div class="risk-circle" id="risk-score-circle">
+                <div class="risk-score-num" id="risk-score-display">68.5</div>
+                <div class="risk-score-denom">Risk Index</div>
+              </div>
+              <div class="risk-info">
+                <div class="risk-title" id="risk-category-display">High Risk Category</div>
+                <div class="risk-desc" id="risk-summary-text">
+                  Severe left knee valgus collapse and high bilateral limb asymmetry detected during deceleration. High probability of ACL strain.
+                </div>
+              </div>
+            </div>
+
+            <!-- PDF Exact Weighted Scoring Model Breakdown -->
+            <div class="panel" style="padding: 18px; margin-bottom: 20px;">
+              <h3 style="font-size: 13px; text-transform: uppercase; color: var(--accent-cyan); margin-bottom: 14px; letter-spacing: 0.5px;">
+                Weighted Scoring Model Breakdown (Page 6 Blueprint)
+              </h3>
+
+              <div class="formula-bar-item">
+                <div class="formula-label">
+                  <span>Biomechanical Deviations (35%)</span>
+                  <span id="wt-bio-val">74.0 / 100</span>
+                </div>
+                <div class="formula-progress">
+                  <div class="formula-fill" id="wt-bio-bar" style="width: 74%;"></div>
+                </div>
+              </div>
+
+              <div class="formula-bar-item">
+                <div class="formula-label">
+                  <span>Historical Injury Factors (20%)</span>
+                  <span id="wt-hist-val">85.0 / 100</span>
+                </div>
+                <div class="formula-progress">
+                  <div class="formula-fill" id="wt-hist-bar" style="width: 85%;"></div>
+                </div>
+              </div>
+
+              <div class="formula-bar-item">
+                <div class="formula-label">
+                  <span>Movement Asymmetry (20%)</span>
+                  <span id="wt-asym-val">68.0 / 100</span>
+                </div>
+                <div class="formula-progress">
+                  <div class="formula-fill" id="wt-asym-bar" style="width: 68%;"></div>
+                </div>
+              </div>
+
+              <div class="formula-bar-item">
+                <div class="formula-label">
+                  <span>Training Load Indicators (15%)</span>
+                  <span id="wt-load-val">55.0 / 100</span>
+                </div>
+                <div class="formula-progress">
+                  <div class="formula-fill" id="wt-load-bar" style="width: 55%;"></div>
+                </div>
+              </div>
+
+              <div class="formula-bar-item">
+                <div class="formula-label">
+                  <span>Fatigue Indicators (10%)</span>
+                  <span id="wt-fatigue-val">37.5 / 100</span>
+                </div>
+                <div class="formula-progress">
+                  <div class="formula-fill" id="wt-fatigue-bar" style="width: 37.5%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Categorical Injury Predictions -->
+            <div class="panel" style="padding: 18px; margin-bottom: 20px;">
+              <h3 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 0.5px;">
+                Clinical Injury Probabilities (6 Categories)
+              </h3>
+              <div id="injury-predictions-list">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+
+            <!-- Corrective Regimen -->
+            <div class="panel" style="padding: 18px; margin-bottom: 0;">
+              <h3 style="font-size: 13px; text-transform: uppercase; color: var(--accent-cyan); margin-bottom: 12px; letter-spacing: 0.5px;">
+                Prescribed Corrective Intervention
+              </h3>
+              <div id="exercise-regimen-list">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: ATHLETES & SQUAD ROSTER
+         ========================================== -->
+    <section id="tab-athletes" class="tab-pane">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🏃</span> Athlete Roster & Biomechanical Status
+          </div>
+          <div>
+            <button class="btn btn-primary" onclick="window.promptAddAthlete()">
+              + Register New Athlete
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Athlete Name</th>
+                <th>ID</th>
+                <th>Sport & Position</th>
+                <th>Injury Risk</th>
+                <th>Movement Quality</th>
+                <th>ACWR (Workload)</th>
+                <th>Injury History</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="athletes-table-body">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: KINEMATIC & INJURY ANALYTICS
+         ========================================== -->
+    <section id="tab-analytics" class="tab-pane">
+      <div class="grid-cols-2">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>📈</span> Knee Valgus vs Flexion Trajectory
+            </div>
+            <span class="badge-pill">Kinematic Curve</span>
+          </div>
+          <div style="height: 240px; display: flex; align-items: flex-end; gap: 10px; padding: 20px 0; border-bottom: 1px solid var(--border-subtle);" id="valgus-chart-bars">
+            <!-- Simulated dynamic bars -->
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-top: 8px;">
+            <span>Pre-Impact (0ms)</span>
+            <span>Ground Contact (150ms)</span>
+            <span>Peak Deceleration (300ms)</span>
+            <span>Push-Off (450ms)</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>🎯</span> Bilateral Limb Symmetry Distribution
+            </div>
+            <span class="badge-pill">Left vs Right</span>
+          </div>
+          <div style="padding: 10px 0;">
+            <div class="formula-bar-item">
+              <div class="formula-label"><span>Knee Abduction (Valgus) Delta</span><span style="color: var(--status-crit);">+9.6° (L Deficit)</span></div>
+              <div class="formula-progress"><div class="formula-fill" style="width: 78%; background: var(--status-crit);"></div></div>
+            </div>
+            <div class="formula-bar-item">
+              <div class="formula-label"><span>Peak Landing Sagittal Flexion</span><span style="color: var(--status-mod);">-15.1° (L Stiff)</span></div>
+              <div class="formula-progress"><div class="formula-fill" style="width: 62%; background: var(--status-mod);"></div></div>
+            </div>
+            <div class="formula-bar-item">
+              <div class="formula-label"><span>Ankle Inversion / Pronation Sway</span><span style="color: var(--status-low);">+2.1° (Normal)</span></div>
+              <div class="formula-progress"><div class="formula-fill" style="width: 25%; background: var(--status-low);"></div></div>
+            </div>
+            <div class="formula-bar-item">
+              <div class="formula-label"><span>Pelvic Lateral Drop</span><span style="color: var(--status-mod);">8.4° (Glute Medius)</span></div>
+              <div class="formula-progress"><div class="formula-fill" style="width: 55%; background: var(--status-mod);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🔬</span> Historical Biomechanical Assessments Archive
+          </div>
+          <button class="btn btn-secondary" onclick="window.downloadCSV()">
+            📥 Download Full CSV Telemetry
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Assessment ID</th>
+                <th>Athlete</th>
+                <th>Activity</th>
+                <th>Risk Score</th>
+                <th>Category</th>
+                <th>Knee Valgus (L/R)</th>
+                <th>Impact (g)</th>
+                <th>Date</th>
+                <th>Report</th>
+              </tr>
+            </thead>
+            <tbody id="assessment-history-body">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 5: CORRECTIVE REGIMENS
+         ========================================== -->
+    <section id="tab-exercises" class="tab-pane">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>📋</span> Evidence-Based Sports Medicine Corrective Protocols
+          </div>
+          <span class="badge-pill">Biomechanics Library</span>
+        </div>
+
+        <div class="grid-cols-3" id="exercise-library-grid">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Notifications Drawer / Modal -->
+  <div class="modal-overlay" id="notif-modal" onclick="if(event.target === this) window.toggleNotifModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 16px; font-weight: 700;">🚨 Biomechanical & Workload Alerts</h3>
+        <button class="close-btn" onclick="window.toggleNotifModal()">✕</button>
+      </div>
+      <div id="alerts-container">
+        <!-- Rendered by JS -->
+      </div>
+      <div style="margin-top: 16px; text-align: right;">
+        <button class="btn btn-secondary" onclick="window.markAllAlertsRead()">
+          Mark All as Reviewed
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    Sports Injury Risk Detection Intelligence Platform | Pose Estimation & Biomechanical Analytics System | Running on FastAPI & Computer Vision Engine
+  </footer>
+
+  <!-- Main Frontend Controller -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
